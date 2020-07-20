@@ -1,5 +1,5 @@
 import constants
-
+import copy
 print("""
 Basketball Team Stats Tool \n
 ----MENU---- \n
@@ -9,8 +9,7 @@ Here are your choices:
 """)
 
 menu_option = input("Enter an option >>>   ")
-players_copy = constants.PLAYERS[:] #this is known as slicing sytax for copying
-
+players_copy = copy.deepcopy(constants.PLAYERS) #every shallow copy will change all the existing dictionaries
 
 def clean_data(module):
     for dicti in players_copy:
