@@ -36,7 +36,7 @@ def display_stats(team1, team2, team3):
 
     menu_option = input("Enter an option >>>   ")
 
-    while menu_option != 0:
+    while menu_option != 2:
         print('''
 
         1)Panthers \n
@@ -44,11 +44,14 @@ def display_stats(team1, team2, team3):
         3)Warriors\n\n''')
         team_choice = input('Enter an option>>>   ')
         if team_choice == '1':
-            print(team1)
+            names = '{}, {}, {}, {}, {}, {}'.format(team1[0][0]['name'], team1[0][1]['name'], team1[0][2]['name'], team1[0][3]['name'], team1[0][4]['name'], team1[0][5]['name'])
+            print(names)
         elif team_choice == '2':
-            print(team2)
+            names = '{}, {}, {}, {}, {}, {}'.format(team2[0][0]['name'], team2[0][1]['name'], team2[0][2]['name'], team2[0][3]['name'], team2[0][4]['name'], team2[0][5]['name'])
+            print(names)
         else:
-            print(team3)
+            names = '{}, {}, {}, {}, {}, {}'.format(team3[0][0]['name'], team3[0][1]['name'], team3[0][2]['name'], team3[0][3]['name'], team3[0][4]['name'], team3[0][5]['name'])
+            print(names)
 
 
 
