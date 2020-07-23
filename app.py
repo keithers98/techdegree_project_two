@@ -60,27 +60,38 @@ def display_stats(team1, team2, team3, team_names, player_stats):
 
     def avg_height(player_stats, team):
         avg_height = 0
-        for name in team:
+        team_length = 0
+        for listi in team[0:2]:
             for player in player_stats:
-                if name in player:
-                    avg_height = avg_height + int(player['height'])
+                for name in listi:
+                    if player['name'] == name:
+                        avg_height = avg_height + player['height']
+                        team_length += 1
+        avg_height = round(avg_height / team_length, 2)
         return avg_height
 
 
 
     def ask_again(main_menu):
-        menu_option = input("\n{}\nWould you like to (C)ontinue or (Q)uit? >>   ".format(main_menu))
+        menu_option = input("\n{}\nWould you like to (C)heck out another team or (Q)uit? >>   ".format(main_menu))
         try:
-            if menu_option == 'c':
+            if menu_option.lower() == 'c':
                 menu_option = '1'
-            elif menu_option == 'q':
+            elif menu_option.lower() == 'q':
                 menu_option = '2'
             elif menu_option != 'c' or 'q':
-                raise ValueError("\n\nWhoops, enter 'c' to continue or 'q' to quit.\n")
+                raise ValueError("\n\nWhoops, enter 'c' to choose another team or 'q' to quit.\n")
         except ValueError as err:
             print(err)
             menu_option = ask_again(main_menu)
         return menu_option
+
+
+    def print_stats(team, team_name):
+        print('\nTeam Name: {}\n -------------------'.format(team_name))
+        print('The average height of the team is: {} inches.'.format(avg_height(player_stats, team)))
+        print('Experienced Players: {}\nNon-experienced Players: {}'.format(len(team[0]),len(team[1])))
+        print('Team Members:\n {}, {}, {}, {}, {}, {}'.format(team[0][0], team[0][1], team[0][2], team[1][0], team[1][1], team[1][2]))
 
 
     while menu_option != '2':
@@ -100,22 +111,15 @@ def display_stats(team1, team2, team3, team_names, player_stats):
             print("Oops, that wasn't a valid choice, Please try again.")
 
         elif team_choice == '1':
-            print(avg_height(player_stats, team1))
-            print('\nTeam Name: {}\n -------------------'.format(team_names[0]))
-            print('Experienced Players: {}\nNon-experienced Players: {}'.format(len(team1[0]),len(team1[1])))
-            print('Team Members:\n {}, {}, {}, {}, {}, {}'.format(team1[0][0], team1[0][1], team1[0][2], team1[1][0], team1[1][1], team1[1][2]))
+            print_stats(team1, team_names[0])
             menu_option = ask_again(main_menu)
 
         elif team_choice == '2':
-            print('\nTeam Name: {}\n -------------------'.format(team_names[1]))
-            print('Experienced Players: {}\nNon-experienced Players: {}'.format(len(team2[1]), len(team2[0])))
-            print('Team Members:\n {}, {}, {}, {}, {}, {}'.format(team2[0][0], team2[0][1], team2[0][2], team2[1][0], team2[1][1], team2[1][2]))
+            print_stats(team2, team_names[1])
             menu_option = ask_again(main_menu)
 
         elif team_choice == '3':
-            print('\nTeam Name: {}\n -------------------'.format(team_names[2]))
-            print('Experienced Players: {}\nNon-experienced Players: {}'.format(len(team3[0]), len(team3[1])))
-            print('Team Members:\n {}, {}, {}, {}, {}, {}'.format(team3[0][0], team3[0][1], team3[0][2], team3[1][0], team3[1][1], team3[1][2]))
+            print_stats(team3, team_names[2])
             menu_option = ask_again(main_menu)
 
 
