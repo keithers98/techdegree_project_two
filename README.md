@@ -1,9 +1,7 @@
-# techdegree_project_two
-
 The following links were used for the Basketball project
 Slicing method for copying a list---> https://www.programiz.com/python-programming/methods/list/copy
 
-Index method for extracting index from dicti---> https://www.programiz.com/python-programming/methods/list/index
+Index method for extracting index from 'dicti'---> https://www.programiz.com/python-programming/methods/list/index
 
 How to make a deepcopy ---> https://stackoverflow.com/questions/2465921/how-to-copy-a-dictionary-and-only-edit-the-copy
 
