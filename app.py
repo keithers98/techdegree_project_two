@@ -6,38 +6,70 @@ team_names = constants.TEAMS
 teams = [{constants.TEAMS[0]:[]}, {constants.TEAMS[1]:[]}, {constants.TEAMS[2]:[]}]
 
 def clean_data(player_stats):
+    noobs = []
+    not_noobs = []
     for player in player_stats:
         if player['experience'] == 'YES':
-            #player_stats[player_stats.index(player)]['experience'] = True #same result as line above but way too complicated!
+            not_noobs.append(player['name'])
             player['experience'] = True
         elif player['experience'] == 'NO':
-            #player_stats[player_stats.index(player)]['experience'] = False #same result as line above but way too complicated!
+            noobs.append(player['name'])
             player['experience'] = False
 
         player['height'] = int(player['height'][0:2])
-    return player_stats
+    return player_stats, noobs, not_noobs
 
 
-def balance_teams(player_stats, teams):
-    players_per_team = int(len(player_stats) / len(teams))
-    teams[0][constants.TEAMS[0]].append(player_stats[0:players_per_team])
-    teams[1][constants.TEAMS[1]].append(player_stats[len(teams[0][constants.TEAMS[0]][0]):(players_per_team * 2)])
-    teams[2][constants.TEAMS[2]].append(player_stats[len(teams[1][constants.TEAMS[1]][0]) * 2:(players_per_team * 3)])
+def balance_teams(teams, noobs, not_noobs):
+
+    def players_taken(noobs, not_noobs):
+        del(noobs[0:3])
+        del(not_noobs[0:3])
+        return noobs, not_noobs
+
+    # team one comp
+    noob_balance = int((len(player_stats) / len(teams)) / 2)
+    teams[0][constants.TEAMS[0]].append(noobs[0:noob_balance])
+    teams[0][constants.TEAMS[0]].append(not_noobs[0:noob_balance])
+    noobs, not_noobs = players_taken(noobs, not_noobs)
+
+    #team two comp
+    teams[1][constants.TEAMS[1]].append(noobs[0:noob_balance])
+    teams[1][constants.TEAMS[1]].append(not_noobs[0:noob_balance])
+    noobs, not_noobs = players_taken(noobs, not_noobs)
+
+    #team three comp
+    teams[2][constants.TEAMS[2]].append(noobs[0:noob_balance])
+    teams[2][constants.TEAMS[2]].append(not_noobs[0:noob_balance])
+    noobs, not_noobs = players_taken(noobs, not_noobs)
+
     return teams[0]['Panthers'], teams[1]['Bandits'], teams[2]['Warriors']
 
-def display_stats(team1, team2, team3, team_names):
+def display_stats(team1, team2, team3, team_names, player_stats):
     main_menu = ("""
     Basketball Team Stats Tool \n
-         ----MENU---- \n
-    Here are your choices:
+         ----MENU---- \n""")
+
+    choices = ("""\n     Here are your choices:
     1) Display Team Stats
     2) Quit \n
     """)
-    print(main_menu)
+    print(main_menu, choices)
     menu_option = input("\nEnter an option >>>   ")
 
-    def ask_again():
-        menu_option = input("\nWould you like to (C)ontinue or (Q)uit? >>   ")
+
+    def avg_height(player_stats, team):
+        avg_height = 0
+        for name in team:
+            for player in player_stats:
+                if name in player:
+                    avg_height = avg_height + int(player['height'])
+        return avg_height
+
+
+
+    def ask_again(main_menu):
+        menu_option = input("\n{}\nWould you like to (C)ontinue or (Q)uit? >>   ".format(main_menu))
         try:
             if menu_option == 'c':
                 menu_option = '1'
@@ -47,7 +79,7 @@ def display_stats(team1, team2, team3, team_names):
                 raise ValueError("\n\nWhoops, enter 'c' to continue or 'q' to quit.\n")
         except ValueError as err:
             print(err)
-            menu_option = ask_again()
+            menu_option = ask_again(main_menu)
         return menu_option
 
 
@@ -68,25 +100,26 @@ def display_stats(team1, team2, team3, team_names):
             print("Oops, that wasn't a valid choice, Please try again.")
 
         elif team_choice == '1':
+            print(avg_height(player_stats, team1))
             print('\nTeam Name: {}\n -------------------'.format(team_names[0]))
-            print('Total Players: {}\n'.format(len(team1[0])))
-            print('Team Members:\n {}, {}, {}, {}, {}, {}\n'.format(team1[0][0]['name'], team1[0][1]['name'], team1[0][2]['name'], team1[0][3]['name'], team1[0][4]['name'], team1[0][5]['name']))
-            menu_option = ask_again()
+            print('Experienced Players: {}\nNon-experienced Players: {}'.format(len(team1[0]),len(team1[1])))
+            print('Team Members:\n {}, {}, {}, {}, {}, {}'.format(team1[0][0], team1[0][1], team1[0][2], team1[1][0], team1[1][1], team1[1][2]))
+            menu_option = ask_again(main_menu)
 
         elif team_choice == '2':
             print('\nTeam Name: {}\n -------------------'.format(team_names[1]))
-            print('Total Players: {}\n'.format(len(team2[0])))
-            print('Team Members:\n {}, {}, {}, {}, {}, {}\n'.format(team2[0][0]['name'], team2[0][1]['name'], team2[0][2]['name'], team2[0][3]['name'], team2[0][4]['name'], team2[0][5]['name']))
-            menu_option = ask_again()
+            print('Experienced Players: {}\nNon-experienced Players: {}'.format(len(team2[1]), len(team2[0])))
+            print('Team Members:\n {}, {}, {}, {}, {}, {}'.format(team2[0][0], team2[0][1], team2[0][2], team2[1][0], team2[1][1], team2[1][2]))
+            menu_option = ask_again(main_menu)
 
         elif team_choice == '3':
             print('\nTeam Name: {}\n -------------------'.format(team_names[2]))
-            print('Total Players: {}\n'.format(len(team3[0])))
-            print('Team Members:\n {}, {}, {}, {}, {}, {}'.format(team3[0][0]['name'], team3[0][1]['name'], team3[0][2]['name'], team3[0][3]['name'], team3[0][4]['name'], team3[0][5]['name']))
-            menu_option = ask_again()
+            print('Experienced Players: {}\nNon-experienced Players: {}'.format(len(team3[0]), len(team3[1])))
+            print('Team Members:\n {}, {}, {}, {}, {}, {}'.format(team3[0][0], team3[0][1], team3[0][2], team3[1][0], team3[1][1], team3[1][2]))
+            menu_option = ask_again(main_menu)
 
 
 if __name__ == '__main__':
-    player_stats = clean_data(players)
-    panthers, bandits, warriors = balance_teams(players, teams)
-    display_stats(panthers, bandits, warriors, team_names)
+    player_stats, noobs, not_noobs = clean_data(players)
+    panthers, bandits, warriors = balance_teams(teams, noobs, not_noobs)
+    display_stats(panthers, bandits, warriors, team_names, player_stats)
