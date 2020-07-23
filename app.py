@@ -46,8 +46,7 @@ def balance_teams(teams, noobs, not_noobs):
     return teams[0]['Panthers'], teams[1]['Bandits'], teams[2]['Warriors']
 
 def display_stats(team1, team2, team3, team_names, player_stats):
-    main_menu = ("""
-    Basketball Team Stats Tool \n
+    main_menu = ("""    Basketball Team Stats Tool \n
          ----MENU---- \n""")
 
     choices = ("""\n     Here are your choices:
@@ -58,17 +57,21 @@ def display_stats(team1, team2, team3, team_names, player_stats):
     menu_option = input("\nEnter an option >>>   ")
 
 
-    def avg_height(player_stats, team):
+    def avg_height_and_guard_list(player_stats, team):
         avg_height = 0
         team_length = 0
+        team_guardians = ''
         for listi in team[0:2]:
             for player in player_stats:
                 for name in listi:
                     if player['name'] == name:
                         avg_height = avg_height + player['height']
+                        team_guardians += str("\n{}'s guardian(s): {}\n".format(player['name'], player['guardians']))
+                        #team_guardians.append(player['guardians'])
+
                         team_length += 1
         avg_height = round(avg_height / team_length, 2)
-        return avg_height
+        return avg_height, team_guardians
 
 
 
@@ -80,7 +83,7 @@ def display_stats(team1, team2, team3, team_names, player_stats):
             elif menu_option.lower() == 'q':
                 menu_option = '2'
             elif menu_option != 'c' or 'q':
-                raise ValueError("\n\nWhoops, enter 'c' to choose another team or 'q' to quit.\n")
+                raise ValueError("\n\nWhoops, enter c to choose another team or q to quit.\n")
         except ValueError as err:
             print(err)
             menu_option = ask_again(main_menu)
@@ -89,9 +92,11 @@ def display_stats(team1, team2, team3, team_names, player_stats):
 
     def print_stats(team, team_name):
         print('\nTeam Name: {}\n -------------------'.format(team_name))
-        print('The average height of the team is: {} inches.'.format(avg_height(player_stats, team)))
-        print('Experienced Players: {}\nNon-experienced Players: {}'.format(len(team[0]),len(team[1])))
-        print('Team Members:\n {}, {}, {}, {}, {}, {}'.format(team[0][0], team[0][1], team[0][2], team[1][0], team[1][1], team[1][2]))
+        avg_height, guardians = avg_height_and_guard_list(player_stats, team)
+        print('Experienced Players: {}\n\nNon-experienced Players: {}\n'.format(len(team[0]),len(team[1])))
+        print('Team Members:\n {}, {}, {}, {}, {}, {}\n'.format(team[0][0], team[0][1], team[0][2], team[1][0], team[1][1], team[1][2]))
+        print('The average height of the team is: {} inches.\n'.format(avg_height))
+        print(f'Guardians: \n{guardians}')
 
 
     while menu_option != '2':
